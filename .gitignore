@@ -1,0 +1,23 @@
+# 密钥与环境
+.env
+*.env
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 数据库与运行时产物
+*.db
+*.sqlite3
+
+# 生成的邮件草稿
+email/draft_*.txt
+draft/draft_*.txt
+
+# IDE
+.vscode/
+.idea/
