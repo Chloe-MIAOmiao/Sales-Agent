@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.auth import read_session_token
@@ -11,6 +12,18 @@ from app.templating import templates
 app = FastAPI(title="EduTech 课程销售合规与多语言跟进 Agent 系统")
 
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "app" / "static")), name="static")
+
+
+@app.get("/")
+def root(request: Request):
+    if getattr(getattr(request, "state", None), "session", {}).get("username"):
+        return RedirectResponse("/analysis", status_code=303)
+    return RedirectResponse("/login", status_code=303)
+
+
+@app.get("/favicon.ico")
+def favicon():
+    return RedirectResponse("/static/img/favicon.svg", status_code=301)
 
 
 @app.middleware("http")
