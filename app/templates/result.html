@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}分析结果 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block content %}
+
+{% if result.status == 'invalid_lead' %}
+<div class="card">
+    <h1>无效线索</h1>
+    <span class="badge invalid">无效线索</span>
+    <p>{{ result.spam_check.reason }}</p>
+    <a class="btn" href="/analysis">返回分析</a>
+</div>
+{% else %}
+<div class="card">
+    <h1>客户画像 {% if customer_name %}- {{ customer_name }}{% endif %}</h1>
+    <table>
+        <tr><th>职业背景</th><td>{{ result.customer_profile.occupation_background }}</td></tr>
+        <tr><th>核心痛点</th><td>{{ result.customer_profile.core_pain_point }}</td></tr>
+        <tr><th>预算敏感度</th><td>{{ result.customer_profile.budget_sensitivity }}</td></tr>
+        <tr><th>成交意向度</th><td>{{ result.customer_profile.deal_intent }}</td></tr>
+        <tr><th>语言偏好</th><td>{{ result.customer_profile.language_preference.value }} ({{ result.customer_profile.language_reason }})</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h1>合规审计</h1>
+    {% if result.compliance_report.verdict == 'WARNING' %}
+        <span class="badge warning">WARNING</span>
+    {% else %}
+        <span class="badge passed">PASSED</span>
+    {% endif %}
+    <p>{{ result.compliance_report.summary }}</p>
+    {% if result.compliance_report.violations %}
+    <table>
+        <tr><th>违规类型</th><th>违规原句</th></tr>
+        {% for v in result.compliance_report.violations %}
+        <tr><td>{{ v.violation_type }}</td><td>{{ v.quote }}</td></tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h1>邮件草稿 ({{ result.email_draft.language.value }})</h1>
+    <p><strong>Subject:</strong> {{ result.email_draft.subject }}</p>
+    <pre>{{ result.email_draft.body }}</pre>
+    <p>
+        <strong>反垃圾风险:</strong>
+        {% if result.email_spam_risk.risk_level == 'high' %}<span class="badge invalid">high</span>
+        {% elif result.email_spam_risk.risk_level == 'medium' %}<span class="badge warning">medium</span>
+        {% else %}<span class="badge passed">low</span>{% endif %}
+        {% for issue in result.email_spam_risk.issues %}<div style="color:#888;font-size:13px;">- {{ issue }}</div>{% endfor %}
+    </p>
+    <a class="btn" href="/drafts">查看草稿并审核</a>
+    <a class="btn btn-secondary" href="/analysis">再次分析</a>
+</div>
+{% endif %}
+
+{% endblock %}

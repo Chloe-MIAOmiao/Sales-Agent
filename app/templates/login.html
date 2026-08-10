@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}登录 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block content %}
+<div class="card" style="max-width:400px; margin:60px auto;">
+    <h1>登录</h1>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post" action="/login">
+        <label>用户名</label>
+        <input type="text" name="username" required style="margin:6px 0 12px;">
+        <label>密码</label>
+        <input type="password" name="password" required style="margin:6px 0 12px;">
+        <button type="submit">登录</button>
+    </form>
+    <p style="font-size:12px;color:#888;">默认账号:rep/123456(销售)、manager/123456(主管)</p>
+</div>
+{% endblock %}

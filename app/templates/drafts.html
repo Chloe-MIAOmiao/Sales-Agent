@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}邮件草稿 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block content %}
+<h1>邮件草稿</h1>
+{% if drafts %}
+<table>
+    <tr><th>ID</th><th>语言</th><th>主题</th><th>创建人</th><th>状态</th><th>操作</th></tr>
+    {% for d in drafts %}
+    <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.language }}</td>
+        <td>{{ d.subject }}</td>
+        <td>{{ d.owner }}</td>
+        <td><span class="badge {{ d.status }}">{{ d.status }}</span></td>
+        <td>
+            {% if d.status == 'draft' %}
+            <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
+                <input type="hidden" name="status" value="approved">
+                <button type="submit" class="btn-success">批准</button>
+            </form>
+            <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
+                <input type="hidden" name="status" value="rejected">
+                <button type="submit" class="btn-danger">拒绝</button>
+            </form>
+            {% else %}
+            <span style="color:#999;">已处理</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>暂无草稿。</p>
+{% endif %}
+{% endblock %}

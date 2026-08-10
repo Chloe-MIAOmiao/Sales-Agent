@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}分析 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>客户分析</h1>
+    <p style="color:#666;">上传或粘贴销售聊天记录,系统将自动进行画像分析、合规审计与合规邮件生成。</p>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <div class="sample-buttons">
+        {% for case in sample_cases %}
+        <button type="button" class="btn-secondary" onclick="loadSample('{{ case.key }}')">{{ case.label }}</button>
+        {% endfor %}
+    </div>
+    <form method="post" action="/analysis">
+        <label>客户姓名(选填)</label>
+        <input type="text" name="customer_name" placeholder="如:张女士" style="margin:6px 0 12px;">
+        <label>聊天记录</label>
+        <textarea name="chat_text" id="chat_text" placeholder="在此粘贴客户与销售的聊天记录..."></textarea>
+        <div style="margin-top:12px;">
+            <button type="submit">开始分析</button>
+        </div>
+    </form>
+</div>
+<script>
+async function loadSample(key) {
+    const res = await fetch('/samples/' + key);
+    const data = await res.json();
+    document.getElementById('chat_text').value = data.text;
+}
+</script>
+{% endblock %}
