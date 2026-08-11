@@ -74,3 +74,44 @@ class LLMClient:
                     }
                 )
         raise RuntimeError("unreachable")
+
+    def complete_tool_loop(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        execute,
+        max_steps: int = 8,
+        temperature: float = 0.3,
+    ) -> dict:
+        """ReAct 工具循环:模型请求工具则执行并回传,直到模型输出最终答案。"""
+        working = [*messages]
+        for step in range(max_steps):
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=working,
+                tools=tools,
+                temperature=temperature,
+            )
+            message = response.choices[0].message
+            if message.tool_calls:
+                working.append(message)
+                for tc in message.tool_calls:
+                    name = tc.function.name
+                    try:
+                        args = json.loads(tc.function.arguments or "{}")
+                    except json.JSONDecodeError:
+                        args = {}
+                    try:
+                        obs = str(execute(name, args))
+                    except Exception as e:
+                        obs = f"ERROR: {e}"
+                    working.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tc.id,
+                            "content": obs,
+                        }
+                    )
+                continue
+            return {"final": message.content or "", "steps": step + 1}
+        return {"final": "", "steps": max_steps, "timeout": True}
