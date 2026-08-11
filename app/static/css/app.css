@@ -1,0 +1,32 @@
+:root {
+  --brand: #1976d2;
+  --warning: #e65100;
+  --danger: #c62828;
+  --success: #2e7d32;
+}
+main.container { max-width: 960px; padding-top: 1.5rem; }
+.card { background: var(--pico-card-background-color, #fff); border: 1px solid var(--pico-muted-border-color, #eee); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.badge { display: inline-block; padding: 0.1rem 0.6rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600; }
+.badge.warning { background: #fff3e0; color: var(--warning); }
+.badge.passed { background: #e8f5e9; color: var(--success); }
+.badge.invalid { background: #fce4ec; color: var(--danger); }
+.badge.draft { background: #e3f2fd; color: var(--brand); }
+.badge.approved { background: #e8f5e9; color: var(--success); }
+.badge.sent { background: #e8f5e9; color: var(--success); }
+.badge.rejected { background: #fdecea; color: var(--danger); }
+.badge.pending { background: #fff3e0; color: var(--warning); }
+.badge.done { background: #e8f5e9; color: var(--success); }
+.badge.overdue { background: #fdecea; color: var(--danger); }
+.empty-state { text-align: center; color: var(--pico-muted-color, #888); padding: 2rem 0; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.sample-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0 1rem; }
+pre.email-body { white-space: pre-wrap; background: var(--pico-code-background-color, #fafafa); padding: 1rem; border-radius: 0.4rem; }
+table { margin-bottom: 0; }
+.error { background: #fdecea; color: var(--danger); border: 1px solid #ef9a9a; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.75rem; }
+.btn-success { background: var(--success); color: #fff; border: none; }
+.btn-danger { background: var(--danger); color: #fff; border: none; }
+.badge.leads { background: #e3f2fd; color: var(--brand); }
+.badge.active { background: #e8f5e9; color: var(--success); }
+.badge.lost { background: #fdecea; color: var(--danger); }
+.badge.won { background: #ede7f6; color: #5e35b1; }
+.badge.valid { background: #e8f5e9; color: var(--success); }

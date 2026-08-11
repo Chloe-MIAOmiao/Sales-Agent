@@ -4,52 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/img/favicon.svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="/static/css/app.css">
     <title>{% block title %}EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}</title>
-    <style>
-        body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; background: #f5f7fa; color: #333; }
-        nav { background: #1f2d3d; padding: 12px 24px; display: flex; align-items: center; gap: 20px; }
-        nav .brand { color: #fff; font-weight: 600; margin-right: auto; }
-        nav a { color: #cfd8dc; text-decoration: none; padding: 6px 10px; border-radius: 4px; }
-        nav a:hover { background: #37474f; color: #fff; }
-        .container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
-        .card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 16px; }
-        h1 { font-size: 20px; margin-top: 0; }
-        textarea { width: 100%; min-height: 200px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; font-size: 14px; font-family: monospace; box-sizing: border-box; }
-        input[type=text] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button, .btn { background: #1976d2; color: #fff; border: none; padding: 9px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        button:hover, .btn:hover { background: #1565c0; }
-        .btn-secondary { background: #546e7a; }
-        .btn-success { background: #43a047; }
-        .btn-danger { background: #e53935; }
-        .error { background: #fdecea; color: #c62828; border: 1px solid #ef9a9a; border-radius: 6px; padding: 10px; margin-bottom: 12px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
-        th { background: #eceff1; }
-        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; }
-        .badge.warning { background: #fff3e0; color: #e65100; }
-        .badge.passed { background: #e8f5e9; color: #2e7d32; }
-        .badge.invalid { background: #fce4ec; color: #c2185b; }
-        .badge.draft { background: #e3f2fd; color: #1565c0; }
-        .badge.approved { background: #e8f5e9; color: #2e7d32; }
-        .badge.rejected { background: #fdecea; color: #c62828; }
-        .sample-buttons { margin: 8px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
-        pre { background: #fafafa; border: 1px solid #eee; padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; }
-    </style>
 </head>
 <body>
-<nav>
-    <span class="brand">EduTech 销售 Agent</span>
+<nav class="container-fluid">
+    <ul><li><strong class="brand">EduTech 销售 Agent</strong></li></ul>
     {% if request.state.session.get('username') %}
-        <a href="/analysis">分析</a>
-        <a href="/drafts">草稿</a>
-        {% if request.state.session.get('role') == 'manager' %}
-            <a href="/reports">报表</a>
-        {% endif %}
-        <a href="/logout">退出 ({{ request.state.session.get('username') }})</a>
+    <ul>
+        <li><a href="/analysis">分析</a></li>
+        <li><a href="/tasks">任务</a></li>
+        <li><a href="/customers">客户</a></li>
+        <li><a href="/drafts">草稿</a></li>
+        {% if request.state.session.get('role') == 'manager' %}<li><a href="/reports">报表</a></li>{% endif %}
+        <li><a href="/logout">退出 ({{ request.state.session.get('username') }})</a></li>
+    </ul>
     {% endif %}
 </nav>
-<div class="container">
+<main class="container">
     {% block content %}{% endblock %}
-</div>
+</main>
 </body>
 </html>
