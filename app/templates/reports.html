@@ -18,4 +18,16 @@
         </tbody>
     </table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<div class="card"><h2>各销售员分析数</h2><canvas id="byUserChart"></canvas></div>
+<div class="card"><h2>成交意向分布</h2><canvas id="intentChart"></canvas></div>
+<div class="card"><h2>每日分析与合规警告</h2><canvas id="trendChart"></canvas></div>
+<script>
+const byUser = {{ by_user | tojson }};
+const intentData = {{ intent_data | tojson }};
+const trendData = {{ trend_data | tojson }};
+new Chart(document.getElementById('byUserChart'), { type: 'bar', data: { labels: byUser.map(r=>r.username), datasets: [{ label: '分析数', data: byUser.map(r=>r.analyses), backgroundColor:'#1976d2' }] } });
+new Chart(document.getElementById('intentChart'), { type: 'pie', data: { labels: intentData.map(r=>r.intent), datasets: [{ data: intentData.map(r=>r.n), backgroundColor:['#1976d2','#e65100','#2e7d32'] }] } });
+new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: trendData.map(r=>r.day), datasets: [{ label:'分析数', data: trendData.map(r=>r.n), borderColor:'#1976d2' }, { label:'合规警告', data: trendData.map(r=>r.warns), borderColor:'#e65100' }] } });
+</script>
 {% endblock %}
