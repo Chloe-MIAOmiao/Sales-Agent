@@ -50,8 +50,8 @@ def run_analysis(
         if result.status == "invalid_lead":
             spam = result.spam_check
             cur = conn.execute(
-                "INSERT INTO customers (name, source_chat, lead_status) VALUES (?, ?, ?)",
-                (customer_name or None, chat_text, "invalid"),
+                "INSERT INTO customers (name, source_chat, lead_status, stage, owner_id, last_contact_at) VALUES (?, ?, ?, 'leads', ?, datetime('now','localtime'))",
+                (customer_name or None, chat_text, "invalid", user.get("uid")),
             )
             customer_id = cur.lastrowid
             conn.execute(
@@ -72,12 +72,12 @@ def run_analysis(
             spam_risk = result.email_spam_risk
 
             cur = conn.execute(
-                "INSERT INTO customers (name, language, source_chat, lead_status) VALUES (?, ?, ?, ?)",
+                "INSERT INTO customers (name, language, source_chat, lead_status, stage, owner_id, last_contact_at) VALUES (?, ?, ?, 'valid', 'leads', ?, datetime('now','localtime'))",
                 (
                     customer_name or None,
                     profile.language_preference.value,
                     chat_text,
-                    "valid",
+                    user.get("uid"),
                 ),
             )
             customer_id = cur.lastrowid
