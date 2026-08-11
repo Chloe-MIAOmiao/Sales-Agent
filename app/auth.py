@@ -10,7 +10,7 @@ serializer = URLSafeTimedSerializer(SECRET_KEY, salt="auth")
 
 
 def hash_password(password: str) -> str:
-    return generate_password_hash(password)
+    return generate_password_hash(password, method="pbkdf2:sha256:600000")
 
 
 def verify_password(password: str, password_hash: str) -> bool:
