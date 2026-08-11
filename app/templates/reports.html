@@ -2,18 +2,20 @@
 {% block title %}报表 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
 {% block content %}
 <h1>主管报表</h1>
-<div style="display:flex; gap:12px; margin-bottom:16px;">
-    <div class="card" style="flex:1; text-align:center;"><div style="font-size:28px; font-weight:600;">{{ total_analyses }}</div><div style="color:#666;">总分析数</div></div>
-    <div class="card" style="flex:1; text-align:center;"><div style="font-size:28px; font-weight:600;">{{ invalid_leads }}</div><div style="color:#666;">无效线索</div></div>
-    <div class="card" style="flex:1; text-align:center;"><div style="font-size:28px; font-weight:600; color:#e65100;">{{ warnings }}</div><div style="color:#666;">合规警告</div></div>
+<div class="metric-grid">
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ total_analyses }}</div><div style="color:#888;">总分析数</div></div>
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ invalid_leads }}</div><div style="color:#888;">无效线索</div></div>
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:var(--warning);">{{ warnings }}</div><div style="color:#888;">合规警告</div></div>
 </div>
 <div class="card">
     <h2>各销售员分析统计</h2>
     <table>
-        <tr><th>销售员</th><th>分析数</th><th>合规警告</th><th>无效线索</th></tr>
+        <thead><tr><th>销售员</th><th>分析数</th><th>合规警告</th><th>无效线索</th></tr></thead>
+        <tbody>
         {% for row in by_user %}
         <tr><td>{{ row.username }}</td><td>{{ row.analyses }}</td><td>{{ row.warnings }}</td><td>{{ row.invalid }}</td></tr>
         {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}
