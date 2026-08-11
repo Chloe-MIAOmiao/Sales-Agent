@@ -10,6 +10,12 @@ def get_conn() -> sqlite3.Connection:
     return conn
 
 
+def _ensure_column(conn: sqlite3.Connection, table: str, col: str, ddl: str) -> None:
+    cols = [r[1] for r in conn.execute(f"PRAGMA table_info({table})")]
+    if col not in cols:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {ddl}")
+
+
 def init_db() -> None:
     conn = get_conn()
     try:
@@ -50,8 +56,21 @@ def init_db() -> None:
                 status TEXT DEFAULT 'draft',
                 created_by INTEGER REFERENCES users(id)
             );
+
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                assigned_to INTEGER REFERENCES users(id),
+                customer_id INTEGER REFERENCES customers(id),
+                title TEXT NOT NULL,
+                due_date TEXT,
+                status TEXT DEFAULT 'pending',
+                created_at TEXT DEFAULT (datetime('now', 'localtime'))
+            );
             """
         )
+        _ensure_column(conn, "customers", "stage", "stage TEXT DEFAULT 'leads'")
+        _ensure_column(conn, "customers", "owner_id", "owner_id INTEGER")
+        _ensure_column(conn, "customers", "last_contact_at", "last_contact_at TEXT")
         conn.commit()
     finally:
         conn.close()
