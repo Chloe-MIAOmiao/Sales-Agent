@@ -9,6 +9,7 @@ from app.templating import templates
 from core.llm_client import LLMClient
 from core.mock_data import SAMPLE_CASES, get_sample_case
 from core.pipeline import run_pipeline
+from core.tasks import maybe_create_followup_task
 
 router = APIRouter()
 
@@ -101,6 +102,11 @@ def run_analysis(
                     draft.language.value,
                     user.get("uid"),
                 ),
+            )
+            maybe_create_followup_task(
+                conn, analysis_id=analysis_id, customer_id=customer_id,
+                user_id=user.get("uid"),
+                profile=profile, compliance=compliance,
             )
             conn.commit()
     finally:

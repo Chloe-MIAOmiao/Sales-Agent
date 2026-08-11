@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from app.auth import read_session_token
 from app.config import BASE_DIR
 from app.db import init_db
-from app.routes import analysis, auth, drafts, reports
+from app.routes import analysis, auth, drafts, reports, tasks
 from app.templating import templates
 
 
@@ -53,3 +53,4 @@ app.include_router(auth.router)
 app.include_router(analysis.router)
 app.include_router(drafts.router)
 app.include_router(reports.router)
+app.include_router(tasks.router)
