@@ -26,14 +26,11 @@ def test_pipeline_completes_valid_lead():
 
 
 def test_pipeline_stops_on_invalid_lead():
-    invalid = dict(FINAL)
-    invalid.update({"status": "invalid_lead", "customer_profile": None,
-                    "compliance_report": None, "email_draft": None, "email_spam_risk": None})
-    invalid["spam_check"] = {"is_invalid_lead": True, "reason": "仅索要免费资料"}
-    client = ScriptedClient([
-        {"kind": "call", "tool": "check_spam", "args": {"chat": "x"}},
-        {"kind": "final", "content": json.dumps(invalid, ensure_ascii=False)},
-    ])
+    from core.schemas import SpamCheck
+    client = ScriptedClient(
+        [{"kind": "call", "tool": "check_spam", "args": {"chat": "x"}}],
+        structured={SpamCheck: SpamCheck(is_invalid_lead=True, reason="仅索要免费资料")},
+    )
     result = run_pipeline(client, "x")
     assert result.status == "invalid_lead"
     assert result.email_draft is None

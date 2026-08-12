@@ -28,19 +28,19 @@ def _make_executor(llm: LLMClient):
     """返回可执行工具函数;状态保存在闭包中,供最终组装 PipelineResult。"""
     state: dict = {}
 
-    def check_spam(chat: str):
+    def _check_spam(chat: str):
         state["spam"] = check_invalid_lead(llm, chat)
         return state["spam"].model_dump_json(ensure_ascii=False)
 
-    def analyze_profile(chat: str):
+    def _analyze_profile(chat: str):
         state["profile"] = analyze_profile(llm, chat)
         return state["profile"].model_dump_json(ensure_ascii=False)
 
-    def audit_compliance(chat: str):
+    def _audit_compliance(chat: str):
         state["compliance"] = audit_chat(llm, chat)
         return state["compliance"].model_dump_json(ensure_ascii=False)
 
-    def generate_email(chat: str):
+    def _generate_email(chat: str):
         profile = state.get("profile")
         compliance = state.get("compliance")
         if profile is None or compliance is None:
@@ -48,7 +48,7 @@ def _make_executor(llm: LLMClient):
         state["draft"] = write_followup_email(llm, profile, compliance, chat)
         return state["draft"].model_dump_json(ensure_ascii=False)
 
-    def check_email_spam(chat: str):
+    def _check_email_spam(chat: str):
         draft = state.get("draft")
         if draft is None:
             raise RuntimeError("check_email_spam 需先执行 generate_email")
@@ -56,27 +56,51 @@ def _make_executor(llm: LLMClient):
         return state["spam_risk"].model_dump_json(ensure_ascii=False)
 
     registry = {
-        "check_spam": check_spam,
-        "analyze_profile": analyze_profile,
-        "audit_compliance": audit_compliance,
-        "generate_email": generate_email,
-        "check_email_spam": check_email_spam,
+        "check_spam": _check_spam,
+        "analyze_profile": _analyze_profile,
+        "audit_compliance": _audit_compliance,
+        "generate_email": _generate_email,
+        "check_email_spam": _check_email_spam,
     }
     return registry, state
 
 
+REGISTRY_NAMES = {
+    "check_spam": "spam",
+    "analyze_profile": "profile",
+    "audit_compliance": "compliance",
+    "generate_email": "draft",
+    "check_email_spam": "spam_risk",
+}
+
+_REQUIRED_ORDER = ["check_spam", "analyze_profile", "audit_compliance", "generate_email", "check_email_spam"]
+_STATE_KEY = REGISTRY_NAMES
+
+
 def run_agent(llm: LLMClient, chat_text: str) -> PipelineResult:
     registry, state = _make_executor(llm)
-    result = llm.complete_tool_loop(
+    llm.complete_tool_loop(
         messages=[{"role": "system", "content": SYSTEM_PROMPT},
                   {"role": "user", "content": f"聊天记录:\n{chat_text}"}],
         tools=TOOL_DEFINITIONS,
         execute=lambda name, args: registry[name](**args),
     )
-    if result.get("timeout") or not result.get("final"):
-        raise RuntimeError("Agent 未能在限定步数内给出结果")
-    try:
-        data = json.loads(result["final"])
-        return PipelineResult.model_validate(data)
-    except Exception as e:
-        raise RuntimeError(f"Agent 最终输出无法解析: {e}") from e
+    # 模型可能漏调工具;按依赖顺序补全缺失步骤,保证结果完整。
+    for name in _REQUIRED_ORDER:
+        if _STATE_KEY[name] not in state:
+            registry[name](chat_text)
+
+    spam = state.get("spam")
+    if spam and spam.is_invalid_lead:
+        return PipelineResult(status="invalid_lead", spam_check=spam)
+    missing = [k for k in ("profile", "compliance", "draft", "spam_risk") if k not in state]
+    if missing:
+        raise RuntimeError("Agent 未能完成所有分析步骤")
+    return PipelineResult(
+        status="completed",
+        spam_check=spam,
+        customer_profile=state["profile"],
+        compliance_report=state["compliance"],
+        email_draft=state["draft"],
+        email_spam_risk=state["spam_risk"],
+    )

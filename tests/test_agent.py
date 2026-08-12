@@ -12,20 +12,27 @@ def test_tool_definitions_cover_required_tools():
 
 
 def test_run_agent_returns_completed_result():
-    result_json = json.dumps({
-        "status": "completed",
-        "spam_check": {"is_invalid_lead": False, "reason": "ok"},
-        "customer_profile": {"occupation_background": "运营", "core_pain_point": "转行",
-                             "budget_sensitivity": "Medium", "deal_intent": "Medium",
-                             "language_preference": "zh", "language_reason": "中文"},
-        "compliance_report": {"verdict": "PASSED", "violations": [], "summary": "合规"},
-        "email_draft": {"language": "zh", "subject": "跟进", "body": "您好"},
-        "email_spam_risk": {"risk_level": "low", "issues": []},
-    })
     client = ScriptedClient([
         {"kind": "call", "tool": "check_spam", "args": {"chat": "x"}},
-        {"kind": "final", "content": result_json},
+        {"kind": "call", "tool": "analyze_profile", "args": {"chat": "x"}},
+        {"kind": "call", "tool": "audit_compliance", "args": {"chat": "x"}},
+        {"kind": "call", "tool": "generate_email", "args": {"chat": "x"}},
+        {"kind": "call", "tool": "check_email_spam", "args": {"chat": "x"}},
+        {"kind": "final", "content": json.dumps({})},
     ])
     result = run_agent(client, "x")
     assert isinstance(result, PipelineResult)
     assert result.status == "completed"
+    assert result.customer_profile is not None
+    assert result.email_draft is not None
+
+
+def test_run_agent_invalid_lead():
+    from core.schemas import SpamCheck
+    client = ScriptedClient(
+        [{"kind": "call", "tool": "check_spam", "args": {"chat": "x"}}],
+        structured={SpamCheck: SpamCheck(is_invalid_lead=True, reason="仅索要免费资料")},
+    )
+    result = run_agent(client, "x")
+    assert result.status == "invalid_lead"
+    assert result.customer_profile is None
