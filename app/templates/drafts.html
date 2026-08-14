@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}邮件草稿 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('drafts.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>邮件草稿</h1>
+<h1>{{ t('drafts.title') }}</h1>
 {% if drafts %}
 <table>
-    <thead><tr><th>ID</th><th>语言</th><th>主题</th><th>创建人</th><th>状态</th><th>操作</th></tr></thead>
+    <thead><tr><th>{{ t('drafts.th.id') }}</th><th>{{ t('drafts.th.language') }}</th><th>{{ t('drafts.th.subject') }}</th><th>{{ t('drafts.th.owner') }}</th><th>{{ t('drafts.th.status') }}</th><th>{{ t('drafts.th.actions') }}</th></tr></thead>
     <tbody>
     {% for d in drafts %}
     <tr>
@@ -12,24 +12,24 @@
         <td>{{ d.language }}</td>
         <td>{{ d.subject }}</td>
         <td>{{ d.owner }}</td>
-        <td><span class="badge {{ d.status }}">{{ d.status }}</span></td>
+        <td><span class="badge {{ d.status }}">{{ t('draft.status.' ~ d.status) }}</span></td>
         <td>
             {% if d.status == 'draft' %}
             <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
                 <input type="hidden" name="status" value="approved">
-                <button type="submit" class="btn-success">批准</button>
+                <button type="submit" class="btn-success">{{ t('drafts.approve') }}</button>
             </form>
             <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
                 <input type="hidden" name="status" value="rejected">
-                <button type="submit" class="btn-danger">拒绝</button>
+                <button type="submit" class="btn-danger">{{ t('drafts.reject') }}</button>
             </form>
-            {% else %}<span style="color:#999;">已处理</span>{% endif %}
+            {% else %}<span style="color:#999;">{{ t('drafts.processed') }}</span>{% endif %}
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 {% else %}
-<div class="empty-state">暂无草稿。</div>
+<div class="empty-state">{{ t('drafts.empty') }}</div>
 {% endif %}
 {% endblock %}

@@ -1,33 +1,33 @@
 {% extends "base.html" %}
-{% block title %}客户管理 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('customers.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>客户管理</h1>
+<h1>{{ t('customers.title') }}</h1>
 <form method="get" action="/customers" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-    <input type="text" name="q" value="{{ q }}" placeholder="搜索客户名">
+    <input type="text" name="q" value="{{ q }}" placeholder="{{ t('customers.search_ph') }}">
     <select name="stage">
-        <option value="">全部阶段</option>
+        <option value="">{{ t('customers.all_stages') }}</option>
         {% for s in ['leads','active','lost','won'] %}
         <option value="{{ s }}" {% if stage==s %}selected{% endif %}>{{ s }}</option>
         {% endfor %}
     </select>
-    <button type="submit">筛选</button>
+    <button type="submit">{{ t('customers.filter') }}</button>
 </form>
 {% if customers %}
 <table>
-    <thead><tr><th>ID</th><th>客户名</th><th>阶段</th><th>负责人</th><th>语言</th><th>线索状态</th><th>最近联系</th></tr></thead>
+    <thead><tr><th>{{ t('customers.th.id') }}</th><th>{{ t('customers.th.name') }}</th><th>{{ t('customers.th.stage') }}</th><th>{{ t('customers.th.owner') }}</th><th>{{ t('customers.th.language') }}</th><th>{{ t('customers.th.lead_status') }}</th><th>{{ t('customers.th.last_contact') }}</th></tr></thead>
     <tbody>
     {% for c in customers %}
     <tr>
         <td>{{ c.id }}</td><td>{{ c.name or '-' }}</td>
-        <td><span class="badge {{ c.stage }}">{{ c.stage }}</span></td>
+        <td><span class="badge {{ c.stage }}">{{ t('stage.' ~ c.stage) }}</span></td>
         <td>{{ c.owner or '-' }}</td><td>{{ c.language or '-' }}</td>
-        <td><span class="badge {{ c.lead_status }}">{{ c.lead_status }}</span></td>
+        <td><span class="badge {{ c.lead_status }}">{{ t('lead_status.' ~ c.lead_status) }}</span></td>
         <td>{{ c.last_contact_at or '-' }}</td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 {% else %}
-<div class="empty-state">暂无客户。</div>
+<div class="empty-state">{{ t('customers.empty') }}</div>
 {% endif %}
 {% endblock %}

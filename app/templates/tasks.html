@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% block title %}跟进任务 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('tasks.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>跟进任务</h1>
+<h1>{{ t('tasks.title') }}</h1>
 {% if tasks %}
 <table>
-    <thead><tr><th>ID</th><th>客户</th><th>任务</th><th>负责人</th><th>截止</th><th>状态</th><th>操作</th></tr></thead>
+    <thead><tr><th>{{ t('tasks.th.id') }}</th><th>{{ t('tasks.th.customer') }}</th><th>{{ t('tasks.th.task') }}</th><th>{{ t('tasks.th.owner') }}</th><th>{{ t('tasks.th.due') }}</th><th>{{ t('tasks.th.status') }}</th><th>{{ t('tasks.th.actions') }}</th></tr></thead>
     <tbody>
-    {% for t in tasks %}
+    {% for tsk in tasks %}
     <tr>
-        <td>{{ t.id }}</td><td>{{ t.customer or '-' }}</td><td>{{ t.title }}</td><td>{{ t.owner }}</td><td>{{ t.due_date }}</td>
-        <td><span class="badge {{ t.status }}">{{ t.status }}</span></td>
-        <td><form method="post" action="/tasks/{{ t.id }}/toggle" style="display:inline;">
-            <button type="submit">{% if t.status == 'done' %}重开{% else %}完成{% endif %}</button>
+        <td>{{ tsk.id }}</td><td>{{ tsk.customer or '-' }}</td><td>{{ tsk.title }}</td><td>{{ tsk.owner }}</td><td>{{ tsk.due_date }}</td>
+        <td><span class="badge {{ tsk.status }}">{{ t('status.' ~ tsk.status) }}</span></td>
+        <td><form method="post" action="/tasks/{{ tsk.id }}/toggle" style="display:inline;">
+            <button type="submit">{% if tsk.status == 'done' %}{{ t('action.reopen') }}{% else %}{{ t('action.complete') }}{% endif %}</button>
         </form></td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 {% else %}
-<div class="empty-state">暂无跟进任务。</div>
+<div class="empty-state">{{ t('tasks.empty') }}</div>
 {% endif %}
 {% endblock %}
