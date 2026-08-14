@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}报表 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('reports.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>主管报表</h1>
+<h1>{{ t('reports.title') }}</h1>
 <div class="metric-grid">
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ total_analyses }}</div><div style="color:#888;">总分析数</div></div>
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ invalid_leads }}</div><div style="color:#888;">无效线索</div></div>
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:var(--warning);">{{ warnings }}</div><div style="color:#888;">合规警告</div></div>
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ total_analyses }}</div><div style="color:#888;">{{ t('reports.metric.total') }}</div></div>
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ invalid_leads }}</div><div style="color:#888;">{{ t('reports.metric.invalid') }}</div></div>
+    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:var(--warning);">{{ warnings }}</div><div style="color:#888;">{{ t('reports.metric.warnings') }}</div></div>
 </div>
 <div class="card">
-    <h2>各销售员分析统计</h2>
+    <h2>{{ t('reports.by_user') }}</h2>
     <table>
-        <thead><tr><th>销售员</th><th>分析数</th><th>合规警告</th><th>无效线索</th></tr></thead>
+        <thead><tr><th>{{ t('reports.th.salesperson') }}</th><th>{{ t('reports.th.analyses') }}</th><th>{{ t('reports.th.warnings') }}</th><th>{{ t('reports.th.invalid') }}</th></tr></thead>
         <tbody>
         {% for row in by_user %}
         <tr><td>{{ row.username }}</td><td>{{ row.analyses }}</td><td>{{ row.warnings }}</td><td>{{ row.invalid }}</td></tr>
@@ -19,15 +19,15 @@
     </table>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<div class="card"><h2>各销售员分析数</h2><canvas id="byUserChart"></canvas></div>
-<div class="card"><h2>成交意向分布</h2><canvas id="intentChart"></canvas></div>
-<div class="card"><h2>每日分析与合规警告</h2><canvas id="trendChart"></canvas></div>
+<div class="card"><h2>{{ t('reports.chart.by_user') }}</h2><canvas id="byUserChart"></canvas></div>
+<div class="card"><h2>{{ t('reports.chart.intent') }}</h2><canvas id="intentChart"></canvas></div>
+<div class="card"><h2>{{ t('reports.chart.trend') }}</h2><canvas id="trendChart"></canvas></div>
 <script>
 const byUser = {{ by_user | tojson }};
 const intentData = {{ intent_data | tojson }};
 const trendData = {{ trend_data | tojson }};
-new Chart(document.getElementById('byUserChart'), { type: 'bar', data: { labels: byUser.map(r=>r.username), datasets: [{ label: '分析数', data: byUser.map(r=>r.analyses), backgroundColor:'#1976d2' }] } });
+new Chart(document.getElementById('byUserChart'), { type: 'bar', data: { labels: byUser.map(r=>r.username), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: byUser.map(r=>r.analyses), backgroundColor:'#1976d2' }] } });
 new Chart(document.getElementById('intentChart'), { type: 'pie', data: { labels: intentData.map(r=>r.intent), datasets: [{ data: intentData.map(r=>r.n), backgroundColor:['#1976d2','#e65100','#2e7d32'] }] } });
-new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: trendData.map(r=>r.day), datasets: [{ label:'分析数', data: trendData.map(r=>r.n), borderColor:'#1976d2' }, { label:'合规警告', data: trendData.map(r=>r.warns), borderColor:'#e65100' }] } });
+new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: trendData.map(r=>r.day), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: trendData.map(r=>r.n), borderColor:'#1976d2' }, { label: {{ t('reports.chart.warnings') | tojson }}, data: trendData.map(r=>r.warns), borderColor:'#e65100' }] } });
 </script>
 {% endblock %}
