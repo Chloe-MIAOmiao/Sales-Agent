@@ -36,3 +36,23 @@ def test_run_agent_invalid_lead():
     result = run_agent(client, "x")
     assert result.status == "invalid_lead"
     assert result.customer_profile is None
+
+
+from core import agent
+
+
+def test_get_system_prompt_default_is_chinese():
+    sys, tools = agent.get_system_prompt("zh-CN")
+    assert "数据分析" in sys
+    assert tools[0]["function"]["name"] == "check_spam"
+
+
+def test_get_system_prompt_english():
+    sys, tools = agent.get_system_prompt("en-US")
+    assert "compliance" in sys.lower() or "agent" in sys.lower()
+    assert len(tools) == 5
+
+
+def test_get_system_prompt_invalid_falls_back():
+    sys, _ = agent.get_system_prompt("fr-FR")
+    assert "数据分析" in sys

@@ -33,7 +33,8 @@ def run_analysis(
 ):
     llm = LLMClient()
     try:
-        result = run_pipeline(llm, chat_text)
+        lang = getattr(request.state, "lang", "zh-CN")
+        result = run_pipeline(llm, chat_text, lang=lang)
     except Exception as e:
         return templates.TemplateResponse(
             request,
