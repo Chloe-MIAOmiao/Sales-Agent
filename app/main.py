@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from app.auth import read_session_token
 from app.config import BASE_DIR
 from app.db import init_db
+from app.i18n import get_lang, is_supported, set_lang_cookie
 from app.routes import analysis, auth, customers, drafts, reports, tasks
 from app.templating import templates
 
@@ -37,7 +38,17 @@ async def load_session(request: Request, call_next):
     else:
         request.state.user = None
         request.state.session = {}
+    request.state.lang = get_lang(request)
     response = await call_next(request)
+    return response
+
+
+@app.get("/set-language/{lang}")
+def set_language(lang: str, request: Request):
+    target = lang if is_supported(lang) else "zh-CN"
+    referer = request.headers.get("referer") or "/"
+    response = RedirectResponse(referer, status_code=303)
+    set_lang_cookie(response, target)
     return response
 
 

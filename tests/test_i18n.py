@@ -69,3 +69,31 @@ def test_t_filter_is_context_aware():
     assert tmpl.render(lang="zh-HK") == "分析"
     assert tmpl.render(lang="zh-CN") == "分析"
     assert tmpl.render(lang="fr-FR") == "分析"  # 非法 lang 回退 zh-CN
+
+
+from starlette.testclient import TestClient
+from app.main import app
+
+
+def test_set_language_sets_cookie_and_redirects():
+    client = TestClient(app)
+    resp = client.get("/set-language/en-US", headers={"referer": "/analysis"}, follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/analysis"
+    assert resp.cookies["lang"] == "en-US"
+
+
+def test_set_language_default_redirect():
+    client = TestClient(app)
+    resp = client.get("/set-language/zh-HK", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/"
+    assert resp.cookies["lang"] == "zh-HK"
+
+
+def test_set_language_invalid_falls_back_redirect():
+    client = TestClient(app)
+    resp = client.get("/set-language/fr-FR", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] in ("/", "/login")
+    assert resp.cookies["lang"] == "zh-CN"
