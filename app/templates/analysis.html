@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% block title %}分析 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('analysis.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
 <div class="card">
     <hgroup>
-        <h1>客户分析</h1>
-        <p>上传或粘贴销售聊天记录,系统将自动进行画像分析、合规审计与合规邮件生成。</p>
+        <h1>{{ t('analysis.header') }}</h1>
+        <p>{{ t('analysis.subtitle') }}</p>
     </hgroup>
-    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    {% if error %}<div class="error">{{ t('analysis.failed') }} {{ error }}</div>{% endif %}
     <div class="sample-buttons">
         {% for case in sample_cases %}
-        <button type="button" class="btn-secondary" onclick="loadSample('{{ case.key }}')">{{ case.label }}</button>
+        <button type="button" class="btn-secondary" onclick="loadSample('{{ case.key }}')">{{ t(case.label_key) }}</button>
         {% endfor %}
     </div>
     <form method="post" action="/analysis">
-        <label for="customer_name">客户姓名(选填)</label>
-        <input type="text" id="customer_name" name="customer_name" placeholder="如:张女士">
-        <label for="chat_text">聊天记录</label>
-        <textarea id="chat_text" name="chat_text" placeholder="在此粘贴客户与销售的聊天记录..."></textarea>
-        <button type="submit" style="margin-top:1rem;">开始分析</button>
+        <label for="customer_name">{{ t('analysis.customer_name') }}</label>
+        <input type="text" id="customer_name" name="customer_name" placeholder="{{ t('analysis.customer_name_ph') }}">
+        <label for="chat_text">{{ t('analysis.chat_text') }}</label>
+        <textarea id="chat_text" name="chat_text" placeholder="{{ t('analysis.chat_text_ph') }}"></textarea>
+        <button type="submit" style="margin-top:1rem;">{{ t('analysis.submit') }}</button>
     </form>
 </div>
 <script>

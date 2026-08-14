@@ -40,7 +40,7 @@ def run_analysis(
             "analysis.html",
             {
                 "sample_cases": SAMPLE_CASES,
-                "error": f"分析失败: {e}",
+                "error": str(e),
             },
         )
 

@@ -1,34 +1,34 @@
 {% extends "base.html" %}
-{% block title %}分析结果 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('result.profile') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
 
 {% if result.status == 'invalid_lead' %}
 <div class="card">
-    <h1>无效线索 <span class="badge invalid">无效线索</span></h1>
+    <h1>{{ t('result.invalid_lead') }} <span class="badge invalid">{{ t('result.invalid_badge') }}</span></h1>
     <p>{{ result.spam_check.reason }}</p>
-    <a role="button" href="/analysis">返回分析</a>
+    <a role="button" href="/analysis">{{ t('result.back') }}</a>
 </div>
 {% else %}
 <div class="card">
-    <hgroup><h1>客户画像{% if customer_name %} - {{ customer_name }}{% endif %}</h1></hgroup>
+    <hgroup><h1>{{ t('result.profile') }}{% if customer_name %} - {{ customer_name }}{% endif %}</h1></hgroup>
     <table>
-        <tr><th>职业背景</th><td>{{ result.customer_profile.occupation_background }}</td></tr>
-        <tr><th>核心痛点</th><td>{{ result.customer_profile.core_pain_point }}</td></tr>
-        <tr><th>预算敏感度</th><td>{{ result.customer_profile.budget_sensitivity }}</td></tr>
-        <tr><th>成交意向度</th><td>{{ result.customer_profile.deal_intent }}</td></tr>
-        <tr><th>语言偏好</th><td>{{ result.customer_profile.language_preference.value }} ({{ result.customer_profile.language_reason }})</td></tr>
+        <tr><th>{{ t('result.profile.occupation') }}</th><td>{{ result.customer_profile.occupation_background }}</td></tr>
+        <tr><th>{{ t('result.profile.pain_point') }}</th><td>{{ result.customer_profile.core_pain_point }}</td></tr>
+        <tr><th>{{ t('result.profile.budget') }}</th><td>{{ result.customer_profile.budget_sensitivity }}</td></tr>
+        <tr><th>{{ t('result.profile.intent') }}</th><td>{{ result.customer_profile.deal_intent }}</td></tr>
+        <tr><th>{{ t('result.profile.language') }}</th><td>{{ result.customer_profile.language_preference.value }} ({{ result.customer_profile.language_reason }})</td></tr>
     </table>
 </div>
 
 <div class="card">
-    <hgroup><h1>合规审计
+    <hgroup><h1>{{ t('result.compliance') }}
         {% if result.compliance_report.verdict == 'WARNING' %}<span class="badge warning">WARNING</span>
         {% else %}<span class="badge passed">PASSED</span>{% endif %}
     </h1></hgroup>
     <p>{{ result.compliance_report.summary }}</p>
     {% if result.compliance_report.violations %}
     <table>
-        <tr><th>违规类型</th><th>违规原句</th></tr>
+        <tr><th>{{ t('result.compliance.violation_type') }}</th><th>{{ t('result.compliance.quote') }}</th></tr>
         {% for v in result.compliance_report.violations %}
         <tr><td>{{ v.violation_type }}</td><td>{{ v.quote }}</td></tr>
         {% endfor %}
@@ -37,17 +37,17 @@
 </div>
 
 <div class="card">
-    <hgroup><h1>邮件草稿 ({{ result.email_draft.language.value }})</h1></hgroup>
-    <p><strong>Subject:</strong> {{ result.email_draft.subject }}</p>
+    <hgroup><h1>{{ t('result.email') }} ({{ result.email_draft.language.value }})</h1></hgroup>
+    <p><strong>{{ t('result.email.subject') }}:</strong> {{ result.email_draft.subject }}</p>
     <pre class="email-body">{{ result.email_draft.body }}</pre>
-    <p><strong>反垃圾风险:</strong>
+    <p><strong>{{ t('result.email.spam_risk') }}:</strong>
         {% if result.email_spam_risk.risk_level == 'high' %}<span class="badge invalid">high</span>
         {% elif result.email_spam_risk.risk_level == 'medium' %}<span class="badge warning">medium</span>
         {% else %}<span class="badge passed">low</span>{% endif %}
         {% for issue in result.email_spam_risk.issues %}<div style="color:#888;font-size:0.85rem;">- {{ issue }}</div>{% endfor %}
     </p>
-    <a role="button" href="/drafts">查看草稿并审核</a>
-    <a role="button" class="secondary" href="/analysis">再次分析</a>
+    <a role="button" href="/drafts">{{ t('result.email.view_drafts') }}</a>
+    <a role="button" class="secondary" href="/analysis">{{ t('result.email.analyze_again') }}</a>
 </div>
 {% endif %}
 {% endblock %}

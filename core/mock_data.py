@@ -3,6 +3,7 @@
 SAMPLE_CASES = [
     {
         "key": "risk_chat",
+        "label_key": "sample.risk_chat.label",
         "label": "加载违规案例",
         "title": "案例 1:高风险违规(中文)",
         "text": (
@@ -16,6 +17,7 @@ SAMPLE_CASES = [
     },
     {
         "key": "english_lead",
+        "label_key": "sample.english_lead.label",
         "label": "加载英文客户案例",
         "title": "案例 2:外企/跨国背景(英文跟进)",
         "text": (
@@ -29,6 +31,7 @@ SAMPLE_CASES = [
     },
     {
         "key": "invalid_lead",
+        "label_key": "sample.invalid_lead.label",
         "label": "加载垃圾线索案例",
         "title": "案例 3:无效/垃圾线索",
         "text": (
