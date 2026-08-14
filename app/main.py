@@ -47,6 +47,8 @@ async def load_session(request: Request, call_next):
 def set_language(lang: str, request: Request):
     target = lang if is_supported(lang) else "zh-CN"
     referer = request.headers.get("referer") or "/"
+    if not referer.startswith("/") or referer.startswith("//"):
+        referer = "/"
     response = RedirectResponse(referer, status_code=303)
     set_lang_cookie(response, target)
     return response

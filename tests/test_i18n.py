@@ -99,6 +99,15 @@ def test_set_language_invalid_falls_back_redirect():
     assert resp.cookies["lang"] == "zh-CN"
 
 
+def test_set_language_rejects_external_referer_redirect():
+    client = TestClient(app)
+    for external in ("https://evil.com/x", "//evil.com/x"):
+        resp = client.get("/set-language/en-US", headers={"referer": external}, follow_redirects=False)
+        assert resp.status_code == 303
+        assert resp.headers["location"] == "/"
+        assert resp.cookies["lang"] == "en-US"
+
+
 def test_template_response_injects_lang():
     from starlette.testclient import TestClient
     from app.main import app
