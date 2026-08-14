@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}登录 - EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}
+{% block title %}{{ t('login.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
 <div class="card" style="max-width: 420px; margin: 4rem auto;">
     <hgroup>
-        <h1 style="margin-bottom:0;">登录</h1>
-        <p>EduTech 课程销售合规与多语言跟进 Agent 系统</p>
+        <h1 style="margin-bottom:0;">{{ t('login.title') }}</h1>
+        <p>{{ t('login.subtitle') }}</p>
     </hgroup>
-    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    {% if error %}<div class="error">{{ t('login.error') }}</div>{% endif %}
     <form method="post" action="/login">
-        <label for="username">用户名</label>
+        <label for="username">{{ t('login.username') }}</label>
         <input type="text" id="username" name="username" required autocomplete="username">
-        <label for="password">密码</label>
+        <label for="password">{{ t('login.password') }}</label>
         <input type="password" id="password" name="password" required autocomplete="current-password">
-        <button type="submit" style="margin-top:1rem;">登录</button>
+        <button type="submit" style="margin-top:1rem;">{{ t('login.submit') }}</button>
     </form>
-    <p style="font-size:0.8rem;color:var(--pico-muted-color,#888);">默认账号:rep/123456(销售)、manager/123456(主管)</p>
+    <p style="font-size:0.8rem;color:var(--pico-muted-color,#888);">{{ t('login.default_accounts') }}</p>
 </div>
 {% endblock %}

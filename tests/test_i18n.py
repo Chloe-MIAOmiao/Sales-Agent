@@ -97,3 +97,15 @@ def test_set_language_invalid_falls_back_redirect():
     assert resp.status_code == 303
     assert resp.headers["location"] in ("/", "/login")
     assert resp.cookies["lang"] == "zh-CN"
+
+
+def test_template_response_injects_lang():
+    from starlette.testclient import TestClient
+    from app.main import app
+
+    client = TestClient(app)
+    resp = client.get("/login", cookies={"lang": "en-US"})
+    assert resp.status_code == 200
+    assert 'lang="en-US"' in resp.text
+    assert "Sign in" in resp.text
+    assert "登录" not in resp.text

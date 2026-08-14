@@ -1,26 +1,36 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/img/favicon.svg">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="/static/css/app.css">
-    <title>{% block title %}EduTech 课程销售合规与多语言跟进 Agent 系统{% endblock %}</title>
+    <title>{% block title %}{{ t('app.title') }}{% endblock %}</title>
 </head>
 <body>
 <nav class="container-fluid">
-    <ul><li><strong class="brand">EduTech 销售 Agent</strong></li></ul>
-    {% if request.state.session.get('username') %}
+    <ul><li><strong class="brand">{{ t('nav.brand') }}</strong></li></ul>
     <ul>
-        <li><a href="/analysis">分析</a></li>
-        <li><a href="/tasks">任务</a></li>
-        <li><a href="/customers">客户</a></li>
-        <li><a href="/drafts">草稿</a></li>
-        {% if request.state.session.get('role') == 'manager' %}<li><a href="/reports">报表</a></li>{% endif %}
-        <li><a href="/logout">退出 ({{ request.state.session.get('username') }})</a></li>
-    </ul>
+        <li>
+            <details class="dropdown" style="position:relative;">
+                <summary role="button" class="secondary">{{ t('lang.current') }}</summary>
+                <ul>
+                    {% for code, label in SUPPORTED.items() %}
+                    <li><a href="/set-language/{{ code }}">{{ label }}</a></li>
+                    {% endfor %}
+                </ul>
+            </details>
+        </li>
+    {% if request.state.session.get('username') %}
+        <li><a href="/analysis">{{ t('nav.analysis') }}</a></li>
+        <li><a href="/tasks">{{ t('nav.tasks') }}</a></li>
+        <li><a href="/customers">{{ t('nav.customers') }}</a></li>
+        <li><a href="/drafts">{{ t('nav.drafts') }}</a></li>
+        {% if request.state.session.get('role') == 'manager' %}<li><a href="/reports">{{ t('nav.reports') }}</a></li>{% endif %}
+        <li><a href="/logout">{{ t('nav.logout') }} ({{ request.state.session.get('username') }})</a></li>
     {% endif %}
+    </ul>
 </nav>
 <main class="container">
     {% block content %}{% endblock %}
