@@ -59,3 +59,13 @@ def test_set_lang_cookie():
     response = FakeResp()
     i18n.set_lang_cookie(response, "zh-HK")
     assert response.cookies["lang"] == "zh-HK"
+
+
+def test_t_filter_is_context_aware():
+    from app.templating import templates
+
+    tmpl = templates.env.from_string("{{ t('nav.analysis') }}")
+    assert tmpl.render(lang="en-US") == "Analysis"
+    assert tmpl.render(lang="zh-HK") == "分析"
+    assert tmpl.render(lang="zh-CN") == "分析"
+    assert tmpl.render(lang="fr-FR") == "分析"  # 非法 lang 回退 zh-CN
