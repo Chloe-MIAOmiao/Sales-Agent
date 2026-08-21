@@ -8,5 +8,5 @@ python-multipart>=0.0.9
 itsdangerous>=2.2
 werkzeug>=3.0
 pytest>=8.2
-# MCP 邮件(如后续引入官方 MCP SDK)
-# 当前使用 smtplib 内置库,无需额外依赖
+# MCP 官方 SDK(邮件 MCP server,stdio 传输;2.0 移除了 FastMCP 故锁定 1.x)
+mcp>=1.8,<2
