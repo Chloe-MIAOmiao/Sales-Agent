@@ -14,7 +14,7 @@
         {% endfor %}
     </div>
     {% endif %}
-    <form method="post" action="/analysis">
+    <form method="post" action="/analysis" id="analysis-form">
         <div class="field">
             <label for="customer_name">{{ t('analysis.customer_name') }}</label>
             <input type="text" id="customer_name" name="customer_name" placeholder="{{ t('analysis.customer_name_ph') }}">
@@ -24,7 +24,7 @@
             <textarea id="chat_text" name="chat_text" rows="8" placeholder="{{ t('analysis.chat_text_ph') }}"></textarea>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn-primary">{{ t('analysis.submit') }}</button>
+            <button type="submit" class="btn-primary" id="analysis-submit">{{ t('analysis.submit') }}</button>
         </div>
     </form>
 </div>
@@ -34,5 +34,10 @@ async function loadSample(key) {
     const data = await res.json();
     document.getElementById('chat_text').value = data.text;
 }
+document.getElementById('analysis-form').addEventListener('submit', function () {
+    const btn = document.getElementById('analysis-submit');
+    btn.disabled = true;
+    btn.textContent = "{{ t('analysis.submitting') }}";
+});
 </script>
 {% endblock %}

@@ -11,7 +11,7 @@
     <tr>
         <td>{{ d.id }}</td>
         <td>{{ d.language }}</td>
-        <td>{{ d.subject }}</td>
+        <td><a href="/drafts/{{ d.id }}">{{ d.subject }}</a></td>
         <td>{{ d.owner }}</td>
         <td><span class="badge {{ d.status }}">{{ t('draft.status.' ~ d.status) }}</span></td>
         <td>

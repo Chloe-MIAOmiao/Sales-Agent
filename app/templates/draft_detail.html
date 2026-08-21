@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ t('draft.detail.title') }} - {{ t('app.title') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('draft.detail.title') }}</h1></div>
+<div class="card">
+    <hgroup>
+        <h1>{{ d.subject }} <span class="badge {{ d.status }}">{{ t('draft.status.' ~ d.status) }}</span></h1>
+        <p>
+            {{ t('drafts.th.owner') }}: {{ d.owner }}
+            {% if d.customer_name %} · {{ t('customers.th.name') }}: {{ d.customer_name }}{% endif %}
+            {% if d.analysis_created_at %} · {{ d.analysis_created_at }}{% endif %}
+        </p>
+    </hgroup>
+    <p><strong>{{ t('drafts.th.language') }}:</strong> {{ d.language }}</p>
+    <pre class="email-body">{{ d.body }}</pre>
+    {% if d.status == 'draft' %}
+    <div class="row-actions">
+        <form method="post" action="/drafts/{{ d.id }}/review" class="inline-form">
+            <input type="hidden" name="status" value="approved">
+            <button type="submit" class="btn-success">{{ t('drafts.approve') }}</button>
+        </form>
+        <form method="post" action="/drafts/{{ d.id }}/review" class="inline-form">
+            <input type="hidden" name="status" value="rejected">
+            <button type="submit" class="btn-danger">{{ t('drafts.reject') }}</button>
+        </form>
+    </div>
+    {% endif %}
+    <a class="btn-secondary" href="/drafts">{{ t('draft.detail.back') }}</a>
+</div>
+{% endblock %}

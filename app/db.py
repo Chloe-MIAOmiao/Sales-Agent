@@ -71,6 +71,9 @@ def init_db() -> None:
         _ensure_column(conn, "customers", "stage", "stage TEXT DEFAULT 'leads'")
         _ensure_column(conn, "customers", "owner_id", "owner_id INTEGER")
         _ensure_column(conn, "customers", "last_contact_at", "last_contact_at TEXT")
+        _ensure_column(
+            conn, "analyses", "email_spam_risk_json", "email_spam_risk_json TEXT"
+        )
         conn.commit()
     finally:
         conn.close()

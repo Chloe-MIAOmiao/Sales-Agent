@@ -46,12 +46,14 @@
     <hgroup><h1>{{ t('result.email') }} ({{ result.email_draft.language.value }})</h1></hgroup>
     <p><strong>{{ t('result.email.subject') }}:</strong> {{ result.email_draft.subject }}</p>
     <pre class="email-body">{{ result.email_draft.body }}</pre>
+    {% if result.email_spam_risk %}
     <p><strong>{{ t('result.email.spam_risk') }}:</strong>
         {% if result.email_spam_risk.risk_level == 'high' %}<span class="badge invalid">high</span>
         {% elif result.email_spam_risk.risk_level == 'medium' %}<span class="badge warning">medium</span>
         {% else %}<span class="badge passed">low</span>{% endif %}
         {% for issue in result.email_spam_risk.issues %}<div class="issue-list">- {{ issue }}</div>{% endfor %}
     </p>
+    {% endif %}
     <div class="row-actions">
         <a class="btn-primary" href="/drafts">{{ t('result.email.view_drafts') }}</a>
         <a class="btn-secondary" href="/analysis">{{ t('result.email.analyze_again') }}</a>

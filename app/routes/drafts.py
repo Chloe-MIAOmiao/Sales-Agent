@@ -48,6 +48,38 @@ def drafts_page(request: Request):
     )
 
 
+@router.get("/drafts/{draft_id}", response_class=HTMLResponse)
+@require_role("rep", "manager")
+def draft_detail(request: Request, draft_id: int):
+    user = request.state.session
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """
+            SELECT d.*, u.username AS owner,
+                   a.created_at AS analysis_created_at,
+                   c.name AS customer_name
+            FROM email_drafts d
+            JOIN users u ON d.created_by = u.id
+            LEFT JOIN analyses a ON d.analysis_id = a.id
+            LEFT JOIN customers c ON a.customer_id = c.id
+            WHERE d.id = ?
+            """,
+            (draft_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    if not row or (
+        user.get("role") != "manager" and row["created_by"] != user.get("uid")
+    ):
+        return RedirectResponse("/drafts", status_code=303)
+    return templates.TemplateResponse(
+        request,
+        "draft_detail.html",
+        {"d": dict(row)},
+    )
+
+
 @router.post("/drafts/{draft_id}/review")
 @require_role("rep", "manager")
 def review_draft(request: Request, draft_id: int, status: str = "approved"):
