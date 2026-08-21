@@ -4,36 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/img/favicon.svg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="/static/css/app.css">
     <title>{% block title %}{{ t('app.title') }}{% endblock %}</title>
 </head>
 <body>
-<nav class="container-fluid">
-    <ul><li><strong class="brand">{{ t('nav.brand') }}</strong></li></ul>
-    <ul>
-        <li>
-            <details class="dropdown" style="position:relative;">
-                <summary role="button" class="secondary">{{ t('lang.current') }}</summary>
-                <ul>
+{% set path = request.url.path %}
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" href="/analysis" aria-label="{{ t('app.title') }}">
+            <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0F172A"/><polyline points="7,22 13,15 18,18 25,9" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="25" cy="9" r="2.2" fill="#2563EB"/></svg>
+            <span>{{ t('nav.brand') }}</span>
+        </a>
+        {% if request.state.session.get('username') %}
+        <nav class="nav-menu" aria-label="{{ t('app.title') }}">
+            <a class="nav-link {{ 'active' if path.startswith('/analysis') }}" href="/analysis">{{ t('nav.analysis') }}</a>
+            <a class="nav-link {{ 'active' if path.startswith('/tasks') }}" href="/tasks">{{ t('nav.tasks') }}</a>
+            <a class="nav-link {{ 'active' if path.startswith('/customers') }}" href="/customers">{{ t('nav.customers') }}</a>
+            <a class="nav-link {{ 'active' if path.startswith('/drafts') }}" href="/drafts">{{ t('nav.drafts') }}</a>
+            {% if request.state.session.get('role') == 'manager' %}
+            <a class="nav-link {{ 'active' if path.startswith('/reports') }}" href="/reports">{{ t('nav.reports') }}</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+        <div class="nav-side">
+            <details class="dropdown">
+                <summary class="pill" aria-haspopup="menu">
+                    {{ t('lang.current') }}
+                    <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </summary>
+                <ul class="dropdown-menu" role="menu">
                     {% for code, label in SUPPORTED.items() %}
-                    <li><a href="/set-language/{{ code }}">{{ label }}</a></li>
+                    <li role="none"><a role="menuitem" href="/set-language/{{ code }}">{{ label }}</a></li>
                     {% endfor %}
                 </ul>
             </details>
-        </li>
-    {% if request.state.session.get('username') %}
-        <li><a href="/analysis">{{ t('nav.analysis') }}</a></li>
-        <li><a href="/tasks">{{ t('nav.tasks') }}</a></li>
-        <li><a href="/customers">{{ t('nav.customers') }}</a></li>
-        <li><a href="/drafts">{{ t('nav.drafts') }}</a></li>
-        {% if request.state.session.get('role') == 'manager' %}<li><a href="/reports">{{ t('nav.reports') }}</a></li>{% endif %}
-        <li><a href="/logout">{{ t('nav.logout') }} ({{ request.state.session.get('username') }})</a></li>
-    {% endif %}
-    </ul>
-</nav>
+        {% if request.state.session.get('username') %}
+            <a class="pill" href="/logout">{{ t('nav.logout') }} ({{ request.state.session.get('username') }})</a>
+        {% endif %}
+        </div>
+    </div>
+</header>
 <main class="container">
     {% block content %}{% endblock %}
 </main>
+<script>
+document.addEventListener('click', function (e) {
+    document.querySelectorAll('details.dropdown[open]').forEach(function (d) {
+        if (!d.contains(e.target)) d.removeAttribute('open');
+    });
+});
+</script>
 </body>
 </html>

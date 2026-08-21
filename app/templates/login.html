@@ -1,19 +1,28 @@
 {% extends "base.html" %}
 {% block title %}{{ t('login.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<div class="card" style="max-width: 420px; margin: 4rem auto;">
-    <hgroup>
-        <h1 style="margin-bottom:0;">{{ t('login.title') }}</h1>
-        <p>{{ t('login.subtitle') }}</p>
-    </hgroup>
-    {% if error %}<div class="error">{{ t('login.error') }}</div>{% endif %}
-    <form method="post" action="/login">
-        <label for="username">{{ t('login.username') }}</label>
-        <input type="text" id="username" name="username" required autocomplete="username">
-        <label for="password">{{ t('login.password') }}</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password">
-        <button type="submit" style="margin-top:1rem;">{{ t('login.submit') }}</button>
-    </form>
-    <p style="font-size:0.8rem;color:var(--pico-muted-color,#888);">{{ t('login.default_accounts') }}</p>
+<div class="auth-wrap">
+    <div class="card auth-card">
+        <div class="auth-brand">
+            <svg width="40" height="40" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0F172A"/><polyline points="7,22 13,15 18,18 25,9" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="25" cy="9" r="2.2" fill="#2563EB"/></svg>
+        </div>
+        <hgroup>
+            <h1>{{ t('login.title') }}</h1>
+            <p>{{ t('login.subtitle') }}</p>
+        </hgroup>
+        {% if error %}<div class="error">{{ t('login.error') }}</div>{% endif %}
+        <form method="post" action="/login">
+            <div class="field">
+                <label for="username">{{ t('login.username') }}</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="field">
+                <label for="password">{{ t('login.password') }}</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-primary btn-block">{{ t('login.submit') }}</button>
+        </form>
+        <p class="auth-hint">{{ t('login.default_accounts') }}</p>
+    </div>
 </div>
 {% endblock %}

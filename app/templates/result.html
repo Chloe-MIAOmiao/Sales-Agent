@@ -4,20 +4,24 @@
 
 {% if result.status == 'invalid_lead' %}
 <div class="card">
-    <h1>{{ t('result.invalid_lead') }} <span class="badge invalid">{{ t('result.invalid_badge') }}</span></h1>
-    <p>{{ result.spam_check.reason }}</p>
-    <a role="button" href="/analysis">{{ t('result.back') }}</a>
+    <hgroup>
+        <h1>{{ t('result.invalid_lead') }} <span class="badge invalid">{{ t('result.invalid_badge') }}</span></h1>
+        <p>{{ result.spam_check.reason }}</p>
+    </hgroup>
+    <a class="btn-secondary" href="/analysis">{{ t('result.back') }}</a>
 </div>
 {% else %}
 <div class="card">
     <hgroup><h1>{{ t('result.profile') }}{% if customer_name %} - {{ customer_name }}{% endif %}</h1></hgroup>
-    <table>
+    <div class="table-wrap">
+    <table class="table-def">
         <tr><th>{{ t('result.profile.occupation') }}</th><td>{{ result.customer_profile.occupation_background }}</td></tr>
         <tr><th>{{ t('result.profile.pain_point') }}</th><td>{{ result.customer_profile.core_pain_point }}</td></tr>
         <tr><th>{{ t('result.profile.budget') }}</th><td>{{ result.customer_profile.budget_sensitivity }}</td></tr>
         <tr><th>{{ t('result.profile.intent') }}</th><td>{{ result.customer_profile.deal_intent }}</td></tr>
         <tr><th>{{ t('result.profile.language') }}</th><td>{{ result.customer_profile.language_preference.value }} ({{ result.customer_profile.language_reason }})</td></tr>
     </table>
+    </div>
 </div>
 
 <div class="card">
@@ -27,12 +31,14 @@
     </h1></hgroup>
     <p>{{ result.compliance_report.summary }}</p>
     {% if result.compliance_report.violations %}
+    <div class="table-wrap">
     <table>
         <tr><th>{{ t('result.compliance.violation_type') }}</th><th>{{ t('result.compliance.quote') }}</th></tr>
         {% for v in result.compliance_report.violations %}
         <tr><td>{{ v.violation_type }}</td><td>{{ v.quote }}</td></tr>
         {% endfor %}
     </table>
+    </div>
     {% endif %}
 </div>
 
@@ -44,10 +50,12 @@
         {% if result.email_spam_risk.risk_level == 'high' %}<span class="badge invalid">high</span>
         {% elif result.email_spam_risk.risk_level == 'medium' %}<span class="badge warning">medium</span>
         {% else %}<span class="badge passed">low</span>{% endif %}
-        {% for issue in result.email_spam_risk.issues %}<div style="color:#888;font-size:0.85rem;">- {{ issue }}</div>{% endfor %}
+        {% for issue in result.email_spam_risk.issues %}<div class="issue-list">- {{ issue }}</div>{% endfor %}
     </p>
-    <a role="button" href="/drafts">{{ t('result.email.view_drafts') }}</a>
-    <a role="button" class="secondary" href="/analysis">{{ t('result.email.analyze_again') }}</a>
+    <div class="row-actions">
+        <a class="btn-primary" href="/drafts">{{ t('result.email.view_drafts') }}</a>
+        <a class="btn-secondary" href="/analysis">{{ t('result.email.analyze_again') }}</a>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

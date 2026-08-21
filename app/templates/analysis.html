@@ -1,23 +1,31 @@
 {% extends "base.html" %}
 {% block title %}{{ t('analysis.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
+<div class="page-head">
+    <h1>{{ t('analysis.header') }}</h1>
+    <p>{{ t('analysis.subtitle') }}</p>
+</div>
+{% if error %}<div class="error">{{ t('analysis.failed') }} {{ error }}</div>{% endif %}
 <div class="card">
-    <hgroup>
-        <h1>{{ t('analysis.header') }}</h1>
-        <p>{{ t('analysis.subtitle') }}</p>
-    </hgroup>
-    {% if error %}<div class="error">{{ t('analysis.failed') }} {{ error }}</div>{% endif %}
-    <div class="sample-buttons">
+    {% if sample_cases %}
+    <div class="chips">
         {% for case in sample_cases %}
-        <button type="button" class="btn-secondary" onclick="loadSample('{{ case.key }}')">{{ t(case.label_key) }}</button>
+        <button type="button" class="chip" onclick="loadSample('{{ case.key }}')">{{ t(case.label_key) }}</button>
         {% endfor %}
     </div>
+    {% endif %}
     <form method="post" action="/analysis">
-        <label for="customer_name">{{ t('analysis.customer_name') }}</label>
-        <input type="text" id="customer_name" name="customer_name" placeholder="{{ t('analysis.customer_name_ph') }}">
-        <label for="chat_text">{{ t('analysis.chat_text') }}</label>
-        <textarea id="chat_text" name="chat_text" placeholder="{{ t('analysis.chat_text_ph') }}"></textarea>
-        <button type="submit" style="margin-top:1rem;">{{ t('analysis.submit') }}</button>
+        <div class="field">
+            <label for="customer_name">{{ t('analysis.customer_name') }}</label>
+            <input type="text" id="customer_name" name="customer_name" placeholder="{{ t('analysis.customer_name_ph') }}">
+        </div>
+        <div class="field">
+            <label for="chat_text">{{ t('analysis.chat_text') }}</label>
+            <textarea id="chat_text" name="chat_text" rows="8" placeholder="{{ t('analysis.chat_text_ph') }}"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">{{ t('analysis.submit') }}</button>
+        </div>
     </form>
 </div>
 <script>

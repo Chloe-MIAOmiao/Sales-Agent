@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ t('customers.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>{{ t('customers.title') }}</h1>
-<form method="get" action="/customers" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+<div class="page-head"><h1>{{ t('customers.title') }}</h1></div>
+<form method="get" action="/customers" class="filter-bar">
     <input type="text" name="q" value="{{ q }}" placeholder="{{ t('customers.search_ph') }}">
     <select name="stage">
         <option value="">{{ t('customers.all_stages') }}</option>
@@ -13,6 +13,7 @@
     <button type="submit">{{ t('customers.filter') }}</button>
 </form>
 {% if customers %}
+<div class="table-wrap">
 <table>
     <thead><tr><th>{{ t('customers.th.id') }}</th><th>{{ t('customers.th.name') }}</th><th>{{ t('customers.th.stage') }}</th><th>{{ t('customers.th.owner') }}</th><th>{{ t('customers.th.language') }}</th><th>{{ t('customers.th.lead_status') }}</th><th>{{ t('customers.th.last_contact') }}</th></tr></thead>
     <tbody>
@@ -27,6 +28,7 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <div class="empty-state">{{ t('customers.empty') }}</div>
 {% endif %}

@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ t('reports.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>{{ t('reports.title') }}</h1>
+<div class="page-head"><h1>{{ t('reports.title') }}</h1></div>
 <div class="metric-grid">
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ total_analyses }}</div><div style="color:#888;">{{ t('reports.metric.total') }}</div></div>
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;">{{ invalid_leads }}</div><div style="color:#888;">{{ t('reports.metric.invalid') }}</div></div>
-    <div class="card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:var(--warning);">{{ warnings }}</div><div style="color:#888;">{{ t('reports.metric.warnings') }}</div></div>
+    <div class="card" style="text-align:center;"><div class="metric-value">{{ total_analyses }}</div><div class="metric-label">{{ t('reports.metric.total') }}</div></div>
+    <div class="card" style="text-align:center;"><div class="metric-value">{{ invalid_leads }}</div><div class="metric-label">{{ t('reports.metric.invalid') }}</div></div>
+    <div class="card" style="text-align:center;"><div class="metric-value metric-warning">{{ warnings }}</div><div class="metric-label">{{ t('reports.metric.warnings') }}</div></div>
 </div>
 <div class="card">
     <h2>{{ t('reports.by_user') }}</h2>
+    <div class="table-wrap">
     <table>
         <thead><tr><th>{{ t('reports.th.salesperson') }}</th><th>{{ t('reports.th.analyses') }}</th><th>{{ t('reports.th.warnings') }}</th><th>{{ t('reports.th.invalid') }}</th></tr></thead>
         <tbody>
@@ -17,17 +18,18 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<div class="card"><h2>{{ t('reports.chart.by_user') }}</h2><canvas id="byUserChart"></canvas></div>
-<div class="card"><h2>{{ t('reports.chart.intent') }}</h2><canvas id="intentChart"></canvas></div>
-<div class="card"><h2>{{ t('reports.chart.trend') }}</h2><canvas id="trendChart"></canvas></div>
+<div class="card"><hgroup><h1>{{ t('reports.chart.by_user') }}</h1></hgroup><canvas id="byUserChart"></canvas></div>
+<div class="card"><hgroup><h1>{{ t('reports.chart.intent') }}</h1></hgroup><canvas id="intentChart"></canvas></div>
+<div class="card"><hgroup><h1>{{ t('reports.chart.trend') }}</h1></hgroup><canvas id="trendChart"></canvas></div>
 <script>
 const byUser = {{ by_user | tojson }};
 const intentData = {{ intent_data | tojson }};
 const trendData = {{ trend_data | tojson }};
-new Chart(document.getElementById('byUserChart'), { type: 'bar', data: { labels: byUser.map(r=>r.username), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: byUser.map(r=>r.analyses), backgroundColor:'#1976d2' }] } });
-new Chart(document.getElementById('intentChart'), { type: 'pie', data: { labels: intentData.map(r=>r.intent), datasets: [{ data: intentData.map(r=>r.n), backgroundColor:['#1976d2','#e65100','#2e7d32'] }] } });
-new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: trendData.map(r=>r.day), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: trendData.map(r=>r.n), borderColor:'#1976d2' }, { label: {{ t('reports.chart.warnings') | tojson }}, data: trendData.map(r=>r.warns), borderColor:'#e65100' }] } });
+new Chart(document.getElementById('byUserChart'), { type: 'bar', data: { labels: byUser.map(r=>r.username), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: byUser.map(r=>r.analyses), backgroundColor:'#2563EB' }] } });
+new Chart(document.getElementById('intentChart'), { type: 'pie', data: { labels: intentData.map(r=>r.intent), datasets: [{ data: intentData.map(r=>r.n), backgroundColor:['#2563EB','#D97706','#16A34A'] }] } });
+new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: trendData.map(r=>r.day), datasets: [{ label: {{ t('reports.chart.analyses') | tojson }}, data: trendData.map(r=>r.n), borderColor:'#2563EB' }, { label: {{ t('reports.chart.warnings') | tojson }}, data: trendData.map(r=>r.warns), borderColor:'#D97706' }] } });
 </script>
 {% endblock %}

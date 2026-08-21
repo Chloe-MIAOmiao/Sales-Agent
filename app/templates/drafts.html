@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ t('drafts.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>{{ t('drafts.title') }}</h1>
+<div class="page-head"><h1>{{ t('drafts.title') }}</h1></div>
 {% if drafts %}
+<div class="table-wrap">
 <table>
     <thead><tr><th>{{ t('drafts.th.id') }}</th><th>{{ t('drafts.th.language') }}</th><th>{{ t('drafts.th.subject') }}</th><th>{{ t('drafts.th.owner') }}</th><th>{{ t('drafts.th.status') }}</th><th>{{ t('drafts.th.actions') }}</th></tr></thead>
     <tbody>
@@ -15,20 +16,23 @@
         <td><span class="badge {{ d.status }}">{{ t('draft.status.' ~ d.status) }}</span></td>
         <td>
             {% if d.status == 'draft' %}
-            <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
-                <input type="hidden" name="status" value="approved">
-                <button type="submit" class="btn-success">{{ t('drafts.approve') }}</button>
-            </form>
-            <form method="post" action="/drafts/{{ d.id }}/review" style="display:inline;">
-                <input type="hidden" name="status" value="rejected">
-                <button type="submit" class="btn-danger">{{ t('drafts.reject') }}</button>
-            </form>
-            {% else %}<span style="color:#999;">{{ t('drafts.processed') }}</span>{% endif %}
+            <div class="row-actions">
+                <form method="post" action="/drafts/{{ d.id }}/review" class="inline-form">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn-success btn-sm">{{ t('drafts.approve') }}</button>
+                </form>
+                <form method="post" action="/drafts/{{ d.id }}/review" class="inline-form">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn-danger btn-sm">{{ t('drafts.reject') }}</button>
+                </form>
+            </div>
+            {% else %}<span class="muted">{{ t('drafts.processed') }}</span>{% endif %}
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <div class="empty-state">{{ t('drafts.empty') }}</div>
 {% endif %}

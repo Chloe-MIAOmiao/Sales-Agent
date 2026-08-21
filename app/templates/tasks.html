@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ t('tasks.title') }} - {{ t('app.title') }}{% endblock %}
 {% block content %}
-<h1>{{ t('tasks.title') }}</h1>
+<div class="page-head"><h1>{{ t('tasks.title') }}</h1></div>
 {% if tasks %}
+<div class="table-wrap">
 <table>
     <thead><tr><th>{{ t('tasks.th.id') }}</th><th>{{ t('tasks.th.customer') }}</th><th>{{ t('tasks.th.task') }}</th><th>{{ t('tasks.th.owner') }}</th><th>{{ t('tasks.th.due') }}</th><th>{{ t('tasks.th.status') }}</th><th>{{ t('tasks.th.actions') }}</th></tr></thead>
     <tbody>
@@ -10,13 +11,14 @@
     <tr>
         <td>{{ tsk.id }}</td><td>{{ tsk.customer or '-' }}</td><td>{{ tsk.title }}</td><td>{{ tsk.owner }}</td><td>{{ tsk.due_date }}</td>
         <td><span class="badge {{ tsk.status }}">{{ t('status.' ~ tsk.status) }}</span></td>
-        <td><form method="post" action="/tasks/{{ tsk.id }}/toggle" style="display:inline;">
-            <button type="submit">{% if tsk.status == 'done' %}{{ t('action.reopen') }}{% else %}{{ t('action.complete') }}{% endif %}</button>
+        <td><form method="post" action="/tasks/{{ tsk.id }}/toggle" class="inline-form">
+            <button type="submit" class="btn-sm">{% if tsk.status == 'done' %}{{ t('action.reopen') }}{% else %}{{ t('action.complete') }}{% endif %}</button>
         </form></td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <div class="empty-state">{{ t('tasks.empty') }}</div>
 {% endif %}
