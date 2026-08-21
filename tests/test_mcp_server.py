@@ -75,3 +75,32 @@ def test_in_process_tools_still_work():
     definitions, handlers = build_email_tools()
     assert "send_email" in [d["function"]["name"] for d in definitions]
     assert callable(handlers["send_email"])
+
+
+def test_load_env_config_reads_dotenv(monkeypatch, tmp_path):
+    import core.mcp.server as mcp_server
+
+    (tmp_path / ".env").write_text(
+        "SMTP_HOST=smtp.test\nSMTP_PORT=465\n", encoding="utf-8"
+    )
+    monkeypatch.delenv("SMTP_HOST", raising=False)
+    monkeypatch.delenv("SMTP_PORT", raising=False)
+    monkeypatch.chdir(tmp_path)
+    cfg = mcp_server.load_env_config()
+    assert cfg["SMTP_HOST"] == "smtp.test"
+    assert cfg["SMTP_PORT"] == "465"
+
+
+def test_build_server_without_config_reads_env(monkeypatch):
+    import core.mcp.server as mcp_server
+
+    monkeypatch.setattr(mcp_server, "load_env_config", lambda: {"SMTP_HOST": "x"})
+    captured = {}
+
+    class SpyEmail:
+        def __init__(self, config):
+            captured["config"] = config
+
+    monkeypatch.setattr(mcp_server, "EmailServer", SpyEmail)
+    mcp_server.build_email_mcp_server(None)
+    assert captured["config"] == {"SMTP_HOST": "x"}
