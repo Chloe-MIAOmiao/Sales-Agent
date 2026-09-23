@@ -29,15 +29,14 @@ def favicon():
 
 @app.middleware("http")
 async def load_session(request: Request, call_next):
+    request.state.user = None
+    request.state.session = {}
     token = request.cookies.get("session")
     if token:
         data = read_session_token(token)
         if data:
             request.state.user = data
             request.state.session = data
-    else:
-        request.state.user = None
-        request.state.session = {}
     request.state.lang = get_lang(request)
     response = await call_next(request)
     return response
